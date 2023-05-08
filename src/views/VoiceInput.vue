@@ -1,19 +1,20 @@
 <template>
-  <ion-page>
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>Voice Input</ion-title>
-      </ion-toolbar>
-    </ion-header>
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Voice Input</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
-    <ion-content class="ion-padding">
-      <h1>voice input here</h1>
-      <p>Hier der erkannte Text</p>
-      <ion-nav-link router-direction="forward" :component="component">
-        <ion-button>Continue</ion-button>
-      </ion-nav-link>
-    </ion-content>
-  </ion-page>
+  <ion-content class="ion-padding">
+    <VoiceInputButton />
+    <p>Hier der erkannte Text</p>
+    <ion-nav-link
+      router-direction="forward"
+      :component="commandProcessingComponent"
+    >
+      <ion-button>Continue</ion-button>
+    </ion-nav-link>
+  </ion-content>
 </template>
 
 <script setup lang="ts">
@@ -22,12 +23,11 @@ import {
   IonContent,
   IonHeader,
   IonNavLink,
-  IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/vue";
-import SaveMealPreset from "./SaveMealPreset.vue";
-import AddMeal from "./AddMeal.vue";
+import SaveMeal from "./SaveMeal.vue";
+import VoiceInputButton from "../components/VoiceInputButton.vue";
 
-const component = AddMeal;
+const commandProcessingComponent = SaveMeal;
 </script>
