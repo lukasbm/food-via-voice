@@ -3,14 +3,21 @@
     <ion-header :translucent="true">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button :text="getBackButtonText()" default-href="/"></ion-back-button>
+          <ion-back-button
+            :text="getBackButtonText()"
+            default-href="/"
+          ></ion-back-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
 
     <ion-content :fullscreen="true" v-if="message">
       <ion-item>
-        <ion-icon aria-hidden="true" :icon="personCircle" color="primary"></ion-icon>
+        <ion-icon
+          aria-hidden="true"
+          :icon="personCircle"
+          color="primary"
+        ></ion-icon>
         <ion-label class="ion-text-wrap">
           <h2>
             {{ message.fromName }}
@@ -25,7 +32,13 @@
       <div class="ion-padding">
         <h1>{{ message.subject }}</h1>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+          culpa qui officia deserunt mollit anim id est laborum.
         </p>
       </div>
     </ion-content>
@@ -33,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
+import { useRoute } from "vue-router";
 import {
   IonBackButton,
   IonButtons,
@@ -45,14 +58,14 @@ import {
   IonNote,
   IonPage,
   IonToolbar,
-} from '@ionic/vue';
-import { personCircle } from 'ionicons/icons';
-import { getMessage } from '../data/messages';
+} from "@ionic/vue";
+import { personCircle } from "ionicons/icons";
+import { getMessage } from "../data/messages";
 
 const getBackButtonText = () => {
   const win = window as any;
   const mode = win && win.Ionic && win.Ionic.mode;
-  return mode === 'ios' ? 'Inbox' : '';
+  return mode === "ios" ? "Inbox" : "";
 };
 
 const route = useRoute();

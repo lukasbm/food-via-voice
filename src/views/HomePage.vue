@@ -18,7 +18,11 @@
       </ion-header>
 
       <ion-list>
-        <MessageListItem v-for="message in messages" :key="message.id" :message="message" />
+        <MessageListItem
+          v-for="message in messages"
+          :key="message.id"
+          :message="message"
+        />
       </ion-list>
     </ion-content>
   </ion-page>
@@ -34,10 +38,10 @@ import {
   IonRefresherContent,
   IonTitle,
   IonToolbar,
-} from '@ionic/vue';
-import MessageListItem from '@/components/MessageListItem.vue';
-import { getMessages, Message } from '@/data/messages';
-import { ref } from 'vue';
+} from "@ionic/vue";
+import MessageListItem from "@/components/MessageListItem.vue";
+import { getMessages, Message } from "@/data/messages";
+import { ref } from "vue";
 
 const messages = ref<Message[]>(getMessages());
 
