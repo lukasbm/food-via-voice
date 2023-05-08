@@ -1,0 +1,7 @@
+{
+  "name": "FoodViaVoice",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
