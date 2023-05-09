@@ -1,11 +1,11 @@
 <template>
   <ion-header>
     <ion-toolbar>
-      <ion-segment value="all">
-        <ion-segment-button value="all">
+      <ion-segment value="all" v-model="saveType">
+        <ion-segment-button value="track-items">
           <ion-label>Track Items</ion-label>
         </ion-segment-button>
-        <ion-segment-button value="favorites">
+        <ion-segment-button value="save-meal">
           <ion-label>Save as Meal Preset</ion-label>
         </ion-segment-button>
       </ion-segment>
@@ -26,12 +26,14 @@
     </ion-list>
 
     <ion-button id="open-toast" expand="block">Save to Fitbit</ion-button>
-    <p>Successfully saved to FitBit</p>
     <ion-toast
       trigger="open-toast"
-      message="This toast will disappear after 5 seconds"
+      message="Successfully saved to FitBit"
       :duration="5000"
     ></ion-toast>
+
+    <h1>compoletions</h1>
+    {{ completion }}
   </ion-content>
 </template>
 
@@ -51,22 +53,28 @@ import {
   IonContent,
   IonToast,
 } from "@ionic/vue";
+import { ref } from "vue";
+import type { Ref } from "vue";
+import { complete } from "../services/openai";
 
-const foodItems = [
-  {
-    name: "Tomato",
-    amount: "500",
-    unit: "g",
-  },
-  {
-    name: "Milch",
-    amount: "150",
-    unit: "ml",
-  },
-  {
-    name: "Rice",
-    amount: "1",
-    unit: "cup",
-  },
-];
+// types
+interface FoodItem {
+  name: string;
+  unit: string;
+  amount: number;
+}
+type SaveType = "track-items" | "save-meal";
+
+// refs and variables
+const saveType: Ref<SaveType> = ref("track-items");
+const foodItems: Ref<FoodItem[]> = ref([]);
+const completion: Ref<string | undefined> = ref("");
+
+// open ai stuff TEST
+complete(
+  "Ich habe 2 Scheiben weissbrot mit 80gramm lachs und 3 teelöffeln Meerrettich gegessen. Danach gab es noch 150 Gramm griechischen jogurt mit 5 Erdbeeren"
+).then((result) => {
+  console.log(result);
+  completion.value = result?.choices[0].text;
+});
 </script>

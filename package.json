@@ -1,5 +1,5 @@
 {
-  "name": "FoodViaVoice",
+  "name": "food-via-voice",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -21,7 +21,9 @@
     "@capacitor/status-bar": "5.0.1",
     "@ionic/vue": "^7.0.0",
     "@ionic/vue-router": "^7.0.0",
+    "axios": "^1.4.0",
     "ionicons": "^7.0.0",
+    "openai": "^3.2.1",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"
   },
@@ -35,7 +37,7 @@
     "eslint": "^8.35.0",
     "eslint-plugin-vue": "^9.9.0",
     "jsdom": "^21.1.0",
-    "typescript": "^4.9.3",
+    "typescript": "^4.9.5",
     "vite": "^4.1.0",
     "vitest": "^0.29.2",
     "vue-tsc": "^1.0.24"
