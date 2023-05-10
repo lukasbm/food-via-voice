@@ -15,7 +15,6 @@ async function completeGPT(foodDescription: string) {
         foodDescription,
       max_tokens: 300,
     });
-    if (response.status != 200) throw new Error("completion error");
     return response.data;
   } catch (error: any) {
     if (error.response) {

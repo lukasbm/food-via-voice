@@ -1,7 +1,6 @@
 export enum AuthenticationStatus {
   NOT_AUTHENTICATED = 0,
   AUTHENTICATED = 1,
-  SIGNING_IN = 2,
 }
 
 export interface IAuth {
@@ -12,24 +11,22 @@ export interface IAuth {
   buildAuthUrl(): URL;
 
   /**
-   * exchange auth code for a pair of access and request tokens
-   */
-  exchangeToken(): void;
-
-  /**
    * fetches the auth token from the "code" query parameter (if available)
-   * or the local storage
-   * TODO: priority? local or query first?
    */
   extractToken(): null | string;
 
   /**
    * current authentication status
    */
-  authenticationStatus(): AuthenticationStatus;
+  authenticationStatus(): Promise<AuthenticationStatus>;
 
   /**
    * revoke active token
    */
   logout(): void;
+
+  /**
+   * exchanging and refreshing the token using the /oauth2/token endpoint
+   * is only necceccary when using the server auth, i.e. in google cloud functions.
+   */
 }
