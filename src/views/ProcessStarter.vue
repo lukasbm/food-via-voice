@@ -1,12 +1,12 @@
 <template>
-  <ion-nav :root="VoiceInput"></ion-nav>
+  <ion-nav :root="InputStep"></ion-nav>
 </template>
 
 <script setup lang="ts">
 import { IonNav } from "@ionic/vue";
 import { ref } from "vue";
 import type { Ref } from "vue";
-import VoiceInput from "./VoiceInput.vue";
+import InputStep from "./InputStep.vue";
 
 enum ProcessingStep {
   UNDEFINED = 0,
