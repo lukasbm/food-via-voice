@@ -6,6 +6,12 @@ const clientId: string = import.meta.env.VITE_FITBIT_CLIENT_ID;
 const scope: string = "nutrition";
 const redirectUri: string = window.location.origin;
 
+enum AuthenticationStatus {
+  unauthenticated = 0,
+  authenticated = 1,
+  authenticating = 2,
+}
+
 /**
  * returns the auth url the user is redirected to for the auth code.
  * NOTE: the auth code is not the auth token! it has to be exchanged first (see below)

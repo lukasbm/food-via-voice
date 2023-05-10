@@ -43,6 +43,8 @@ import {
   IonToolbar,
   IonSpinner,
   IonTextarea,
+  IonButtons,
+  IonIcon,
 } from "@ionic/vue";
 import { settingsOutline } from "ionicons/icons";
 import SaveMeal from "./SaveMeal.vue";
