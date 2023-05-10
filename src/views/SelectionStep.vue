@@ -55,7 +55,7 @@ import {
 } from "@ionic/vue";
 import { ref } from "vue";
 import type { Ref } from "vue";
-import { complete } from "../services/openai";
+import { completeGPT } from "../services/openai";
 
 // types
 interface FoodItem {
@@ -71,7 +71,7 @@ const foodItems: Ref<FoodItem[]> = ref([]);
 const completion: Ref<string | undefined> = ref("");
 
 // open ai stuff TEST
-// complete(
+// completeGPT(
 //   "Ich habe 2 Scheiben weissbrot mit 80gramm lachs und 3 teelöffeln Meerrettich gegessen. Danach gab es noch 150 Gramm griechischen jogurt mit 5 Erdbeeren"
 // ).then((result) => {
 //   console.log(result);

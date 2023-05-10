@@ -6,7 +6,7 @@ const config = new Configuration({
 });
 const openai = new OpenAIApi(config);
 
-async function complete(foodDescription: string) {
+async function completeGPT(foodDescription: string) {
   try {
     const response = await openai.createCompletion({
       model: "text-davinci-003",
@@ -14,7 +14,6 @@ async function complete(foodDescription: string) {
         "Ich werde dir gleich eine Beschreibungen meines Essens geben. Bitte schreibe mir die einzelnen Bestandteile der Mahlzeit als Json Liste auf. Jeder Eintrag der Liste sollte folgende Felder beinhalten: Einheit, Name des Bestandteils, Menge\nDie Beschreibung ist:" +
         foodDescription,
       max_tokens: 300,
-      user: "1", // TODO: insert fitbit username here
     });
     if (response.status != 200) throw new Error("completion error");
     return response.data;
@@ -28,4 +27,4 @@ async function complete(foodDescription: string) {
   }
 }
 
-export { complete };
+export { completeGPT };
