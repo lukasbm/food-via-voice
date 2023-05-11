@@ -12,6 +12,7 @@ import { IonContent, IonSpinner } from "@ionic/vue";
 </script>
 
 <style scoped>
+/* TODO: is there a container class in the ionic css utils? */
 .container {
   text-align: center;
 

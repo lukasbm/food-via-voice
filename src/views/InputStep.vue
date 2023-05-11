@@ -18,10 +18,6 @@
       v-model="recognizedText"
     ></ion-textarea>
     <ion-button expand="block" @click="completeInput">Continue</ion-button>
-
-    <ion-nav-link router-direction="forward" :component="ProcessingStep">
-      <ion-button expand="block" color="danger"> Test loader procesing step </ion-button>
-    </ion-nav-link>
   </ion-content>
 </template>
 
@@ -41,12 +37,11 @@ import { settingsOutline } from "ionicons/icons";
 import { ref } from "vue";
 import type { Ref } from "vue";
 import Settings from "./Settings.vue";
-
-import ProcessingStep from "./ProcessingStep.vue";
+import { handleInput } from "@/services/processFood";
 
 const recognizedText: Ref<string> = ref("");
 
 function completeInput() {
-  // TODO:
+  handleInput(recognizedText.value);
 }
 </script>

@@ -1,18 +1,15 @@
 <template>
-  <ion-nav :root="InputStep"></ion-nav>
+  <ion-nav id="processNav" :root="InputStep"></ion-nav>
 </template>
 
 <script setup lang="ts">
 import { IonNav } from "@ionic/vue";
-import { ref } from "vue";
-import type { Ref } from "vue";
+import { onMounted } from "vue";
 import InputStep from "./InputStep.vue";
+import { processNav } from "@/services/processFood";
 
-enum ProcessingStep {
-  UNDEFINED = 0,
-  CAPTURING_INPUT = 1,
-  PROCESSING_INPUT = 2,
-  DONE = 3,
-}
-const step: Ref<ProcessingStep> = ref(ProcessingStep.CAPTURING_INPUT);
+onMounted(() => {
+  const v = document.getElementById("processNav");
+  processNav.value = v;
+});
 </script>
