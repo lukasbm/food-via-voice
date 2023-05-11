@@ -11,29 +11,12 @@ class FitbitAuth implements IAuth {
   private readonly redirectUri: string = window.location.origin;
 
   constructor() {
-    this.isStoredTokenValid().then((res) => {
-      if (!res) this.extractToken();
-    });
-  }
-
-  // extract token if not already stored or if expired
-  private async isStoredTokenValid(): Promise<boolean> {
-    try {
-      const token = await storage.get("fitbitAccessToken");
-      if (!token) return false;
-
-      const expires = await storage.get("fitbitExpires");
-      if (!expires) return false;
-
-      if (new Date() > expires) {
+    this.authenticationStatus().then((status: AuthenticationStatus) => {
+      if (status == AuthenticationStatus.NOT_AUTHENTICATED) {
         this.cleanUp();
-        return false;
+        this.extractToken();
       }
-
-      return true;
-    } catch (err) {
-      return false;
-    }
+    });
   }
 
   /**
@@ -41,7 +24,7 @@ class FitbitAuth implements IAuth {
    * AKA: reset refs and storage
    */
   private cleanUp() {
-    // should clear: fitbitState, fitbitUserId, fitbitAccessToken, fitbitExpires
+    // should clear: fitbitState, fitbitUserId, fitbitAccessToken
     storage.clear();
   }
 
@@ -76,18 +59,12 @@ class FitbitAuth implements IAuth {
     return url;
   }
 
-  /*
-   * TODO: error handling i.e. no params in url
-   */
-  extractToken(): string | null {
+  extractToken(): string {
     const params = new URLSearchParams(window.location.hash.substring(1));
     const accessToken = params.get("access_token");
+    if (!accessToken) throw new Error("extractToken: no token found in URL");
     const userId = params.get("user_id");
-    const expires = new Date(
-      new Date().getTime() +
-        1000 * parseInt(params.get("expires_in") ?? "0") -
-        30 * 1000
-    ); // calculates expiration timestamp (subtracts 30seconds for good measure)
+    if (!userId) throw new Error("extractToken: no userId found in URL");
 
     // params also contains the scopes the user actually accepted. Check if nutrition is active.
     if (params.get("scope") != this.scope)
@@ -97,13 +74,12 @@ class FitbitAuth implements IAuth {
 
     storage.set("fitbitUserId", userId);
     storage.set("fitbitAccessToken", accessToken);
-    storage.set("fitbitExpires", expires);
 
-    return params.get("code");
+    return accessToken;
   }
 
   async authenticationStatus(): Promise<AuthenticationStatus> {
-    const token = await storage.get("fitbitAccessToken");
+    const token = await this.getAccessToken();
 
     try {
       const status = await axios.post(
@@ -111,18 +87,16 @@ class FitbitAuth implements IAuth {
         { token: token },
         {
           headers: {
-            authorization: `Bearer ${token}`,
-            "content-type": "application/x-www-form-urlencoded",
-            accept: "application/json",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/x-www-form-urlencoded",
+            Accept: "application/json",
           },
         }
       );
-      console.log(status.data);
       return status.data.active
         ? AuthenticationStatus.AUTHENTICATED
         : AuthenticationStatus.NOT_AUTHENTICATED;
     } catch (err) {
-      console.error("fitbit token introspection error:\n" + err);
       return AuthenticationStatus.NOT_AUTHENTICATED;
     }
   }
@@ -130,28 +104,40 @@ class FitbitAuth implements IAuth {
   logout(): void {
     const clientId = this.clientId;
 
-    storage.get("fitbitAccessToken").then((token) => {
-      axios
-        .post(
-          "/oauth2/revoke",
-          {
-            token: token,
-            client_id: clientId,
-          },
-          {
-            headers: {
-              "content-type": "application/x-www-form-urlencoded",
+    this.getAccessToken()
+      .then((token) => {
+        axios
+          .post(
+            "/oauth2/revoke",
+            {
+              token: token,
+              client_id: clientId,
             },
-          }
-        )
-        .catch((err) => console.error("fitbit logout error:\n" + err));
-    });
-
-    this.cleanUp();
+            {
+              headers: {
+                "content-type": "application/x-www-form-urlencoded",
+              },
+            }
+          )
+          .catch((err) => console.error("fitbit logout error:\n" + err));
+      })
+      .finally(() => this.cleanUp());
   }
 
-  public async getAccessToken(): Promise<string> {
-    return await storage.get("fitbitAccessToken");
+  public async getAccessToken(): Promise<string | undefined> {
+    try {
+      return await storage.get("fitbitAccessToken");
+    } catch (err) {
+      return undefined;
+    }
+  }
+
+  public async getActiveUser(): Promise<string | undefined> {
+    try {
+      return await storage.get("fitbitUserId");
+    } catch (err) {
+      return undefined;
+    }
   }
 }
 

@@ -27,7 +27,13 @@ export interface IAuth {
   /**
    * return token for usage
    */
-  getAccessToken(): Promise<string>;
+  getAccessToken(): Promise<string | undefined>;
+
+  /**
+   * get active user (if active)
+   */
+  getActiveUser(): Promise<string | undefined>;
+
 
   /**
    * exchanging and refreshing the token using the /oauth2/token endpoint
