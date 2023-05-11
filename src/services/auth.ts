@@ -5,13 +5,12 @@ export enum AuthenticationStatus {
 
 export interface IAuth {
   /**
-   * returns the auth url the user is redirected to for the auth code.
-   * NOTE: the auth code is not the auth token! it has to be exchanged first (see below)
+   * returns the auth url the user is redirected to for the auth token.
    */
   buildAuthUrl(): URL;
 
   /**
-   * fetches the auth token from the "code" query parameter (if available)
+   * fetches the auth token from the query parameters (if available)
    */
   extractToken(): null | string;
 
@@ -24,6 +23,11 @@ export interface IAuth {
    * revoke active token
    */
   logout(): void;
+
+  /**
+   * return token for usage
+   */
+  getAccessToken(): Promise<string>;
 
   /**
    * exchanging and refreshing the token using the /oauth2/token endpoint

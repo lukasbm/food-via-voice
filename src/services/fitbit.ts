@@ -10,6 +10,41 @@ class FitbitAuth implements IAuth {
   private readonly scope: string = "nutrition";
   private readonly redirectUri: string = window.location.origin;
 
+  constructor() {
+    this.isStoredTokenValid().then((res) => {
+      if (!res) this.extractToken();
+    });
+  }
+
+  // extract token if not already stored or if expired
+  private async isStoredTokenValid(): Promise<boolean> {
+    try {
+      const token = await storage.get("fitbitAccessToken");
+      if (!token) return false;
+
+      const expires = await storage.get("fitbitExpires");
+      if (!expires) return false;
+
+      if (new Date() > expires) {
+        this.cleanUp();
+        return false;
+      }
+
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
+   * removes all stored information regarding the authentication
+   * AKA: reset refs and storage
+   */
+  private cleanUp() {
+    // should clear: fitbitState, fitbitUserId, fitbitAccessToken, fitbitExpires
+    storage.clear();
+  }
+
   /**
    * generate and saves state
    */
@@ -41,6 +76,9 @@ class FitbitAuth implements IAuth {
     return url;
   }
 
+  /*
+   * TODO: error handling i.e. no params in url
+   */
   extractToken(): string | null {
     const params = new URLSearchParams(window.location.hash.substring(1));
     const accessToken = params.get("access_token");
@@ -51,7 +89,9 @@ class FitbitAuth implements IAuth {
         30 * 1000
     ); // calculates expiration timestamp (subtracts 30seconds for good measure)
 
-    // TODO: TODO params also contains the scopes the user actually accepted. Check if nutrition is active
+    // params also contains the scopes the user actually accepted. Check if nutrition is active.
+    if (params.get("scope") != this.scope)
+      throw new Error("invalid scopes granted");
 
     // TODO: check state
 
@@ -106,30 +146,43 @@ class FitbitAuth implements IAuth {
         )
         .catch((err) => console.error("fitbit logout error:\n" + err));
     });
+
+    this.cleanUp();
+  }
+
+  public async getAccessToken(): Promise<string> {
+    return await storage.get("fitbitAccessToken");
   }
 }
 
 class FitbitApi {
-  constructor(private auth: IAuth) {
-    console.log("fitbit auth constructor");
-  }
+  constructor(private auth: IAuth) {}
 
-  callApi(
-    url: string,
-    method: Method | string,
-    body?: Object
+  public async callApiConfig(
+    config: AxiosRequestConfig
   ): Promise<AxiosResponse> {
-    const authToken = this.auth.extractToken();
-    const config: AxiosRequestConfig = {
-      url: url,
-      method: method,
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
-      data: body,
+    const authToken = await this.auth.getAccessToken();
+    config.headers = {
+      ...config.headers,
+      Authorization: `Bearer ${authToken}`,
     };
     return axios(config);
   }
+
+  public callApi(
+    url: string,
+    method: Method | string,
+    body?: any
+  ): Promise<AxiosResponse> {
+    const config: AxiosRequestConfig = {
+      url: url,
+      method: method,
+      data: body,
+    };
+    return this.callApiConfig(config);
+  }
+
+  // TODO: or more specific methods
 }
 
 const fitbitAuth: IAuth = new FitbitAuth();

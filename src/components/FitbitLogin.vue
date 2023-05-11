@@ -11,8 +11,7 @@
 import { IonButton } from "@ionic/vue";
 
 import { fitbitAuth } from "../services/fitbit";
+import { AuthenticationStatus } from "../services/auth";
 
 const authUrl: string = fitbitAuth.buildAuthUrl().toString();
-
-fitbitAuth.extractToken();
 </script>
