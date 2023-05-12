@@ -11,23 +11,26 @@
       </ion-segment>
 
       <ion-buttons slot="start">
-        <ion-back-button></ion-back-button>
+        TODO: back button to root
+        <!-- <ion-button -->
+        <!-- <ion-back-button>aaa</ion-back-button> -->
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
 
   <ion-content class="ion-padding">
-    <ion-list>
+    <!-- <ion-list>
       <ion-item v-for="item in foodItems" :key="item.name">
         <ion-checkbox justify="start" :checked="true">
           {{ item.name }} - {{ item.amount }} {{ item.unit }}
         </ion-checkbox>
       </ion-item>
-    </ion-list>
+    </ion-list> -->
 
-    <ion-button id="open-toast" expand="block">Save to Fitbit</ion-button>
+    <ion-button @click="saveSelection()" expand="block"
+      >Save to Fitbit</ion-button
+    >
     <ion-toast
-      trigger="open-toast"
       message="Successfully saved to FitBit"
       :duration="5000"
     ></ion-toast>
@@ -52,16 +55,14 @@ import {
 } from "@ionic/vue";
 import { ref } from "vue";
 import type { Ref } from "vue";
+import { navigateToRoot, saveToFitbit } from "../services/processFood";
 
-// types
-interface FoodItem {
-  name: string;
-  unit: string;
-  amount: number;
-}
 type SaveType = "track-items" | "save-meal";
-
-// refs and variables
 const saveType: Ref<SaveType> = ref("track-items");
-const foodItems: Ref<FoodItem[]> = ref([]);
+
+function saveSelection() {
+  saveToFitbit().then(() => {
+    // TODO: show toast and redirect to start
+  });
+}
 </script>

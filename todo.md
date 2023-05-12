@@ -10,3 +10,11 @@
 # Android version
 - [ ] Fix voice recognition <https://github.com/capacitor-community/speech-recognition>
 
+# Write documentation
+- [ ] For build commands:
+  - `ionic capacitor update`
+  - `ionic build`
+  - `ionic build --android`
+  - `ionic capactior copy android`
+  - `ionic capacitor add android`
+  - 

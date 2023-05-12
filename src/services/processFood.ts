@@ -14,6 +14,10 @@ function navigate(page: NavComponent | NavComponentWithProps) {
   processNav.value.push(page);
 }
 
+function navigateToRoot() {
+  processNav.value.popToRoot();
+}
+
 function handleInput(foodDescription: string) {
   navigate(ProcessingStep);
   processInput(foodDescription);
@@ -21,7 +25,13 @@ function handleInput(foodDescription: string) {
 
 function processInput(foodDescription: string) {
   console.log("chillin now in processInput");
+  const cb = () => navigate(SelectionStep);
+  setTimeout(cb, 500);
   // completeGPT(foodDescription);
+}
+
+async function saveToFitbit() {
+
 }
 
 // enum Step {
@@ -32,4 +42,4 @@ function processInput(foodDescription: string) {
 // }
 // const step: Ref<Step> = ref(Step.CAPTURING_INPUT);
 
-export { processNav, handleInput };
+export { processNav, handleInput, navigate, navigateToRoot, saveToFitbit };

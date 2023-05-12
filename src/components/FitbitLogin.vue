@@ -1,5 +1,3 @@
-<!-- Component with a log in and log out button to register with fitbit. -->
-
 <template>
   <a :href="authUrl">
     <ion-button color="primary">Log in</ion-button>

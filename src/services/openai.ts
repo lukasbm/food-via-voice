@@ -6,24 +6,24 @@ const config = new Configuration({
 });
 const openai = new OpenAIApi(config);
 
-async function completeGPT(foodDescription: string) {
-  try {
-    const response = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt:
-        "Ich werde dir gleich eine Beschreibungen meines Essens geben. Bitte schreibe mir die einzelnen Bestandteile der Mahlzeit als Json Liste auf. Jeder Eintrag der Liste sollte folgende Felder beinhalten: Einheit, Name des Bestandteils, Menge\nDie Beschreibung ist:" +
-        foodDescription,
-      max_tokens: 300,
-    });
-    return response.data;
-  } catch (error: any) {
-    if (error.response) {
-      console.error(error.response.status);
-      console.error(error.response.data);
-    } else {
-      console.error(error.message);
-    }
-  }
+interface FoodItem {
+  name: string;
+  unit: string;
+  amount: number;
+}
+
+async function completeGPT(foodDescription: string): Promise<FoodItem[]> {
+  const response = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt:
+      "Ich werde dir gleich eine Beschreibungen meines Essens geben. Bitte schreibe mir die einzelnen Bestandteile der Mahlzeit als Json Liste auf. Jeder Eintrag der Liste sollte folgende Felder beinhalten: unit, name, amount\nDie Beschreibung ist:" +
+      foodDescription,
+    max_tokens: 500,
+  });
+
+  const completion: string = response.data.choices[0].text ?? "";
+  let foods: FoodItem[] = JSON.parse(completion);
+  return foods;
 }
 
 export { completeGPT };
