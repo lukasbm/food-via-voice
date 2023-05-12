@@ -1,5 +1,6 @@
 import type { Ref } from "vue";
 import { ref } from "vue";
+import { NavComponent, NavComponentWithProps } from "@ionic/core";
 
 import InputStep from "../views/InputStep.vue";
 import ProcessingStep from "../views/ProcessingStep.vue";
@@ -7,7 +8,11 @@ import SelectionStep from "../views/SelectionStep.vue";
 
 import { completeGPT } from "./openai";
 
-const processNav: Ref<any> = ref(null);
+const processNav = ref();
+
+function navigate(page: NavComponent | NavComponentWithProps) {
+  processNav.value.push(page);
+}
 
 enum ProcessingStep {
   UNDEFINED = 0,

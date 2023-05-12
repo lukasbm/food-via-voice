@@ -9,12 +9,14 @@
 
   <ion-content class="ion-padding">
     <ion-item>
-      <h1>Dark Mode Settings</h1>
+      <h3>Dark Mode Settings</h3>
+      <br />
       <dark-mode-toggle></dark-mode-toggle>
     </ion-item>
 
     <ion-item>
-      <h1>FitBit Connection</h1>
+      <h3>FitBit Connection</h3>
+      <br />
       <fitbit-login></fitbit-login>
     </ion-item>
   </ion-content>

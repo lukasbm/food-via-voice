@@ -31,9 +31,6 @@
       message="Successfully saved to FitBit"
       :duration="5000"
     ></ion-toast>
-
-    <h1>compoletions</h1>
-    {{ completion }}
   </ion-content>
 </template>
 
@@ -55,7 +52,6 @@ import {
 } from "@ionic/vue";
 import { ref } from "vue";
 import type { Ref } from "vue";
-import { completeGPT } from "../services/openai";
 
 // types
 interface FoodItem {
@@ -68,13 +64,4 @@ type SaveType = "track-items" | "save-meal";
 // refs and variables
 const saveType: Ref<SaveType> = ref("track-items");
 const foodItems: Ref<FoodItem[]> = ref([]);
-const completion: Ref<string | undefined> = ref("");
-
-// open ai stuff TEST
-// completeGPT(
-//   "Ich habe 2 Scheiben weissbrot mit 80gramm lachs und 3 teelöffeln Meerrettich gegessen. Danach gab es noch 150 Gramm griechischen jogurt mit 5 Erdbeeren"
-// ).then((result) => {
-//   console.log(result);
-//   completion.value = result?.choices[0].text;
-// });
 </script>
