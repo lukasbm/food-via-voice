@@ -34,12 +34,4 @@ async function saveToFitbit() {
 
 }
 
-// enum Step {
-//   UNDEFINED = 0,
-//   CAPTURING_INPUT = 1,
-//   PROCESSING_INPUT = 2,
-//   DONE = 3,
-// }
-// const step: Ref<Step> = ref(Step.CAPTURING_INPUT);
-
 export { processNav, handleInput, navigate, navigateToRoot, saveToFitbit };

@@ -144,7 +144,17 @@ class FitbitAuth implements IAuth {
 class FitbitApi {
   constructor(private auth: IAuth) {}
 
-  public async callApiConfig(
+  public async searchFoods(query: string) {
+    return this.callApiConfig({
+      method: "POST",
+      url: "/1/foods/search.json",
+      params: {
+        query: query,
+      },
+    });
+  }
+
+  private async callApiConfig(
     config: AxiosRequestConfig
   ): Promise<AxiosResponse> {
     const authToken = await this.auth.getAccessToken();
@@ -155,7 +165,7 @@ class FitbitApi {
     return axios(config);
   }
 
-  public callApi(
+  private callApi(
     url: string,
     method: Method | string,
     body?: any
