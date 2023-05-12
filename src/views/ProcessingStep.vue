@@ -1,11 +1,9 @@
 <template>
-  <!-- FIXME: problems with fullscreen? -->
-  <ion-content :fullscreen="false" class="ion-padding">
-    <p>processing tasjdlkasjdlkajsd test</p>
-    <!-- <div class="container">
+  <ion-content :fullscreen="true" class="ion-padding">
+    <div class="container">
       <ion-spinner class="large-spinner"></ion-spinner>
       <p>Hold on, processing ...</p>
-    </div> -->
+    </div>
   </ion-content>
 </template>
 
