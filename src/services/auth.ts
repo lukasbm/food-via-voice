@@ -3,6 +3,13 @@ export enum AuthenticationStatus {
   AUTHENTICATED = 1,
 }
 
+/**
+ * This interface can be used for oauth2 implicit flow
+ *
+ * NOTE:
+ * exchanging and refreshing the token using the /oauth2/token endpoint
+ * is only necceccary when using the server auth, i.e. in google cloud functions.
+ */
 export interface IAuth {
   /**
    * returns the auth url the user is redirected to for the auth token.
@@ -33,10 +40,4 @@ export interface IAuth {
    * get active user (if active)
    */
   getActiveUser(): Promise<string | undefined>;
-
-
-  /**
-   * exchanging and refreshing the token using the /oauth2/token endpoint
-   * is only necceccary when using the server auth, i.e. in google cloud functions.
-   */
 }

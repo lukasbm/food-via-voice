@@ -1,16 +1,11 @@
 import { Configuration, OpenAIApi } from "openai";
+import { FoodItem } from "./food";
 
 const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 const config = new Configuration({
   apiKey: apiKey,
 });
 const openai = new OpenAIApi(config);
-
-interface FoodItem {
-  name: string;
-  unit: string;
-  amount: number;
-}
 
 async function completeGPT(foodDescription: string): Promise<FoodItem[]> {
   const response = await openai.createCompletion({

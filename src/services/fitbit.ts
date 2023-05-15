@@ -1,7 +1,8 @@
 import { AuthenticationStatus, IAuth } from "./auth";
 import axios from "./axios";
-import { AxiosRequestConfig, Method, AxiosResponse } from "axios";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
 import storage from "./storage";
+import { FoodChoice, FoodItem, IFood } from "./food";
 
 class FitbitAuth implements IAuth {
   private readonly baseAuthUrl: string =
@@ -141,22 +142,76 @@ class FitbitAuth implements IAuth {
   }
 }
 
-class FitbitApi {
+enum MealType {
+  Breakfast = 1,
+  MorningSnack = 2,
+  Lunch = 3,
+  AfternoonSnack = 4,
+  Dinner = 5,
+  EveningSnack = 6,
+  Anytime = 7,
+}
+
+class FitbitApi implements IFood {
   constructor(private auth: IAuth) {}
 
-  public async searchFoods(query: string) {
-    return this.callApiConfig({
+  public async searchFoods(query: string): Promise<FoodChoice[]> {
+    const response = await this.callApi({
       method: "POST",
       url: "/1/foods/search.json",
       params: {
         query: query,
       },
     });
+
+    // TODO: turn foodChoice.unitId into an array and get the valid unitss from the getFoodUnits endpoint
+
+    let out = response.data.foods;
+    out.map((f: any) => {
+      const a: FoodChoice = {
+        id: f.foodId,
+        name: f.name,
+        brand: f.brand,
+        unitId: f.defaultUnit.id,
+      };
+      return a;
+    });
+    return out;
   }
 
-  private async callApiConfig(
-    config: AxiosRequestConfig
-  ): Promise<AxiosResponse> {
+  /**
+   * @param num amount number
+   * @returns num rounded and formatted to two decimal places
+   */
+  private formatAmount(num: number): string {
+    return (Math.round(num * 100) / 100).toFixed(2);
+  }
+
+  /**
+   * @param date input date object
+   * @returns date formatted to yyyy-MM-dd.
+   */
+  private formatDate(date: Date): string {
+    return date.toISOString().slice(0, 10);
+  }
+
+  public async logFood(food: FoodChoice & FoodItem): Promise<void> {
+    const mealTime: MealType = MealType.Anytime; // TODO: use appropriate time
+
+    await this.callApi({
+      method: "POST",
+      url: "/1/user/-/foods/log.json",
+      params: {
+        foodId: food.id,
+        mealTypeId: mealTime.valueOf(),
+        unitId: food.unitId,
+        amount: this.formatAmount(food.amount),
+        date: this.formatDate(new Date()),
+      },
+    });
+  }
+
+  private async callApi(config: AxiosRequestConfig): Promise<AxiosResponse> {
     const authToken = await this.auth.getAccessToken();
     config.headers = {
       ...config.headers,
@@ -164,25 +219,10 @@ class FitbitApi {
     };
     return axios(config);
   }
-
-  private callApi(
-    url: string,
-    method: Method | string,
-    body?: any
-  ): Promise<AxiosResponse> {
-    const config: AxiosRequestConfig = {
-      url: url,
-      method: method,
-      data: body,
-    };
-    return this.callApiConfig(config);
-  }
-
-  // TODO: or more specific methods
 }
 
 const fitbitAuth: IAuth = new FitbitAuth();
-const fitbit: FitbitApi = new FitbitApi(fitbitAuth);
+const fitbit: IFood = new FitbitApi(fitbitAuth);
 
 export { fitbitAuth, fitbit };
 export default fitbit;

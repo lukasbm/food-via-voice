@@ -31,7 +31,6 @@ function processInput(foodDescription: string) {
 }
 
 async function saveToFitbit() {
-
 }
 
 export { processNav, handleInput, navigate, navigateToRoot, saveToFitbit };
