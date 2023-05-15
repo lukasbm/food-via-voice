@@ -11,13 +11,23 @@ class FitbitAuth implements IAuth {
   private readonly scope: string = "nutrition";
   private readonly redirectUri: string = window.location.origin;
 
+  // TODO: add authentication status vue ref to dynamically use in the app
+
   constructor() {
-    this.authenticationStatus().then((status: AuthenticationStatus) => {
-      if (status == AuthenticationStatus.NOT_AUTHENTICATED) {
-        this.cleanUp();
-        this.extractToken();
-      }
-    });
+    this.extractToken()
+      .catch((err: Error) => {
+        // token maybe in storage then
+        console.log(err);
+      })
+      .then(() => {
+        // check if token in storage (if available) is valid
+        this.authenticationStatus().then((status: AuthenticationStatus) => {
+          if (status == AuthenticationStatus.NOT_AUTHENTICATED) {
+            console.log("no token available, cleaning up now...");
+            this.cleanUp(); // TODO: sometimes the clean up creates issues...
+          }
+        });
+      });
   }
 
   /**
@@ -30,7 +40,8 @@ class FitbitAuth implements IAuth {
   }
 
   /**
-   * generate and saves state
+   * generates a random nonce to be used as oauth authentication state,
+   * especially in implicit flow
    */
   private generateState(): string {
     const redirectState = Math.random()
@@ -38,17 +49,14 @@ class FitbitAuth implements IAuth {
       .replace(/[^a-z]+/g, "")
       .substring(0, 5);
 
-    storage
-      .set("fitbitState", redirectState)
-      .catch((err) => console.error(err));
-
     return redirectState;
   }
 
   buildAuthUrl(): URL {
     const url = new URL(this.baseAuthUrl);
-    const redirectState = this.generateState();
     const expires: number = 2592000;
+    const redirectState = this.generateState();
+    storage.set("fitbitState", redirectState);
 
     url.searchParams.append("response_type", "token");
     url.searchParams.append("client_id", this.clientId);
@@ -60,10 +68,12 @@ class FitbitAuth implements IAuth {
     return url;
   }
 
-  extractToken(): string {
+  async extractToken(): Promise<string> {
     const params = new URLSearchParams(window.location.hash.substring(1));
+
     const accessToken = params.get("access_token");
     if (!accessToken) throw new Error("extractToken: no token found in URL");
+
     const userId = params.get("user_id");
     if (!userId) throw new Error("extractToken: no userId found in URL");
 
@@ -71,29 +81,35 @@ class FitbitAuth implements IAuth {
     if (params.get("scope") != this.scope)
       throw new Error("invalid scopes granted");
 
-    // TODO: check state
+    const state = await storage.get("fitbitState");
+    if (params.get("state") != state)
+      throw new Error("extractToken: invalid state");
 
-    storage.set("fitbitUserId", userId);
-    storage.set("fitbitAccessToken", accessToken);
+    await storage.set("fitbitUserId", userId);
+    await storage.set("fitbitAccessToken", accessToken);
 
     return accessToken;
   }
 
   async authenticationStatus(): Promise<AuthenticationStatus> {
     const token = await this.getAccessToken();
+    console.log("token in auth status: " + token);
+
+    // no token available
+    if (!token) return AuthenticationStatus.NOT_AUTHENTICATED;
 
     try {
-      const status = await axios.post(
-        "/1.1/oauth2/introspect",
-        { token: token },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/x-www-form-urlencoded",
-            Accept: "application/json",
-          },
-        }
-      );
+      const urlBody = new URLSearchParams();
+      urlBody.append("token", token);
+
+      const status = await axios.post("/1.1/oauth2/introspect", urlBody, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+          "content-type": "application/x-www-form-urlencoded",
+          Accept: "application/json",
+        },
+      });
       return status.data.active
         ? AuthenticationStatus.AUTHENTICATED
         : AuthenticationStatus.NOT_AUTHENTICATED;

@@ -18,8 +18,10 @@ export interface IAuth {
 
   /**
    * fetches the auth token from the query parameters (if available)
+   * throws errors otherwise
+   * Also compares the state/nonce for security
    */
-  extractToken(): null | string;
+  extractToken(): Promise<string>;
 
   /**
    * current authentication status
