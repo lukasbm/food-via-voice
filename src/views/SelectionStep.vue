@@ -11,21 +11,20 @@
       </ion-segment>
 
       <ion-buttons slot="start">
-        TODO: back button to root
-        <!-- <ion-button -->
-        <!-- <ion-back-button>aaa</ion-back-button> -->
+        <!-- TODO: back button to root -->
+        <ion-back-button>aaa</ion-back-button>
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
 
   <ion-content class="ion-padding">
-    <!-- <ion-list>
-      <ion-item v-for="item in foodItems" :key="item.name">
+    <ion-list>
+      <ion-item v-for="item in foodItems" :key="item.id">
         <ion-checkbox justify="start" :checked="true">
           {{ item.name }} - {{ item.amount }} {{ item.unit }}
         </ion-checkbox>
       </ion-item>
-    </ion-list> -->
+    </ion-list>
 
     <ion-button @click="saveSelection()" expand="block"
       >Save to Fitbit</ion-button
@@ -56,8 +55,11 @@ import {
 import { ref } from "vue";
 import type { Ref } from "vue";
 import { navigateToRoot, saveToFitbit } from "../services/processFood";
+import { FoodChoice, FoodItem } from "../services/food";
 
-// TODO: get all data as props => define proper props
+defineProps<{
+  foodItems: (FoodItem & FoodChoice)[];
+}>();
 
 type SaveType = "track-items" | "save-meal";
 const saveType: Ref<SaveType> = ref("track-items");
