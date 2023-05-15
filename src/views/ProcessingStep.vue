@@ -1,4 +1,6 @@
 <template>
+  <!-- TODO: add header with back button to cancel processing? -->
+
   <ion-content :fullscreen="true" class="ion-padding">
     <div class="container">
       <ion-spinner class="large-spinner"></ion-spinner>

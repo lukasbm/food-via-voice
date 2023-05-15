@@ -57,6 +57,8 @@ import { ref } from "vue";
 import type { Ref } from "vue";
 import { navigateToRoot, saveToFitbit } from "../services/processFood";
 
+// TODO: get all data as props => define proper props
+
 type SaveType = "track-items" | "save-meal";
 const saveType: Ref<SaveType> = ref("track-items");
 
