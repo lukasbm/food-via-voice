@@ -25,6 +25,8 @@ class FitbitAuth implements IAuth {
           if (status == AuthenticationStatus.NOT_AUTHENTICATED) {
             console.log("no token available, cleaning up now...");
             this.cleanUp(); // TODO: sometimes the clean up creates issues...
+          } else {
+            console.log("token available");
           }
         });
       });

@@ -1,7 +1,9 @@
 import { Storage } from "@ionic/storage";
 
-const storage: Storage = new Storage();
+let storage: Storage = new Storage();
 
-await storage.create();
+(async function () {
+  storage = await storage.create();
+})();
 
 export default storage;

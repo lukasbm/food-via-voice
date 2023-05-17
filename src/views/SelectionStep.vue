@@ -54,7 +54,7 @@ import {
 } from "@ionic/vue";
 import { ref } from "vue";
 import type { Ref } from "vue";
-import { navigateToRoot, saveToFitbit } from "../services/processFood";
+import { saveToFitbit } from "../services/processFood";
 import { FoodChoice, FoodItem } from "../services/food";
 
 defineProps<{

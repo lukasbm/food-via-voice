@@ -17,4 +17,4 @@
   - `ionic build --android`
   - `ionic capactior copy android`
   - `ionic capacitor add android`
-  - 
+

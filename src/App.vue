@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import { IonApp, IonNav } from "@ionic/vue";
 import InputStep from "./views/InputStep.vue";
-import { processNav } from "@/services/processFood";
+import { processNav } from "@/services/navigation";
 import { onMounted } from "vue";
 import type { Nav } from "@ionic/core/dist/types/components/nav/nav";
 
