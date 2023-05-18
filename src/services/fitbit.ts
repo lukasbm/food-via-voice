@@ -3,17 +3,25 @@ import axios from "./axios";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import storage from "./storage";
 import { FoodChoice, FoodItem, IFood } from "./food";
+import { isPlatform } from "@ionic/vue";
 
 class FitbitAuth implements IAuth {
   private readonly baseAuthUrl: string =
     "https://www.fitbit.com/oauth2/authorize/";
   private readonly clientId: string = import.meta.env.VITE_FITBIT_CLIENT_ID;
   private readonly scope: string = "nutrition";
-  private readonly redirectUri: string = window.location.origin;
+  private readonly redirectUri: string;
 
   // TODO: add authentication status vue ref to dynamically use in the app
 
   constructor() {
+    // get redirectUri
+    if (isPlatform("android"))
+      this.redirectUri = "mypplication://logincallback";
+    else this.redirectUri = window.location.origin;
+
+    // token extraction
+    // TODO: move this initial token extractions stuff into own method.
     this.extractToken()
       .catch((err: Error) => {
         // token maybe in storage then
@@ -71,6 +79,7 @@ class FitbitAuth implements IAuth {
   }
 
   async extractToken(): Promise<string> {
+    // TODO: might not work on android!
     const params = new URLSearchParams(window.location.hash.substring(1));
 
     const accessToken = params.get("access_token");

@@ -24,3 +24,10 @@ function logout() {
   fitbitAuth.logout();
 }
 </script>
+
+
+<!-- TODO: rework whole auth process using:
+https://github.com/moberwasserlechner/capacitor-oauth2
+
+fml
+-->
